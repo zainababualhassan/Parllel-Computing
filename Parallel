@@ -1,0 +1,44 @@
+import numpy as np
+import array
+import PIL.Image
+import time
+  # PPM header
+width = 400
+height = 400
+maxval = 255
+ppm_header = f'P6 {width} {height} {maxval}\n'
+
+ # Default PPM image data (filled with blue)
+image = array.array('B', [0, 0, 255] * width * height)
+def  calclations(index,vectx,vecty):
+       
+        Red = (vectx/400)*256 
+        Red=Red.astype(int)
+        Green=(vecty/400)*256
+        Green=Green.astype(int)
+        Blue=int(0.5*256)
+        index1=index+1
+        index2=index+2
+        for i in range(160000): 
+                image[index[i]] = Red[i]     # red channel
+                image[index1[i]] = Green[i]        # green channel
+                image[index2[i]] = Blue        # Blue channel
+        
+#     --------------------------------------------------------------
+start =time.perf_counter()
+vectxx=np.empty((400,400),dtype = int)
+vectyy=np.empty((400,400),dtype = int)
+for x in range(400):
+     vectxx[x]=np.full(400,x)
+vectyy=np.transpose(vectxx)
+vectyy=vectyy.flatten()
+vectxx=vectxx.flatten()
+index=3 * (vectyy * width + vectxx)
+calclations(index,vectxx,vectyy)
+finish =time.perf_counter()
+print(f'Finished in {round(finish-start,4)}second(s)')
+with open('blue_red_example.ppm', 'wb') as f:
+    f.write(bytearray(ppm_header, 'ascii'))
+    image.tofile(f)
+img = PIL.Image.open('blue_red_example.ppm')
+img.show()
