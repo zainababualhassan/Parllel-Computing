@@ -1,0 +1,30 @@
+import array
+import PIL.Image
+import time
+  # PPM header
+width = 400
+height = 400
+maxval = 255
+ppm_header = f'P6 {width} {height} {maxval}\n'
+ 
+ # Default PPM image data (filled with blue)
+image = array.array('B', [0, 0, 255] * width * height)
+start =time.perf_counter()
+for y in range(400):
+    for x in range(400):
+        index = 3 * (y * width + x)
+        Red = int((x/400)*256)
+        Green=int((y/400)*256)
+        Blue=int(0.5*256)
+        image[index] = Red           # red channel
+        image[index + 1] = Green         # green channel
+        image[index + 2] = Blue         # Blue channel
+
+finish =time.perf_counter()
+print(f'Finished in {round(finish-start,4)}second(s)')
+# Save the PPM image as a binary file
+with open('blue_red_example.ppm', 'wb') as f:
+    f.write(bytearray(ppm_header, 'ascii'))
+    image.tofile(f)
+img = PIL.Image.open('blue_red_example.ppm')
+img.show()
